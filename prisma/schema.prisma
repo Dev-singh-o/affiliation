@@ -1,0 +1,290 @@
+// Influencer affiliate storefront — Prisma schema (PostgreSQL / Neon)
+// Prisma 7: runtime connections go through @prisma/adapter-pg (see lib/db/prisma.ts).
+// CLI/migrations connection is configured in prisma.config.ts (use DIRECT_URL there).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Authentication & authorization (Auth.js models + credentials fields)
+// ---------------------------------------------------------------------------
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  role          Role      @default(EDITOR)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts  Account[]
+  sessions  Session[]
+  auditLogs AdminAuditLog[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------------------------------------------------------------------------
+// Catalog
+// ---------------------------------------------------------------------------
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Product {
+  id                 String        @id @default(cuid())
+  name               String
+  slug               String        @unique
+  shortDescription   String?
+  description        String?       @db.Text
+  brand              String?
+  status             PublishStatus @default(DRAFT)
+  featured           Boolean       @default(false)
+  recommended        Boolean       @default(false)
+  displayOrder       Int           @default(0)
+  recommendationText String?       @db.Text
+  features           String[]      @default([])
+  seoTitle           String?
+  seoDescription     String?
+  publishedAt        DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  images     ProductImage[]
+  categories ProductCategory[]
+  offers     AffiliateOffer[]
+  clicks     AffiliateClick[]
+  redirects  ProductRedirect[]
+
+  @@index([status, publishedAt(sort: Desc)])
+  @@index([status, featured])
+  @@index([status, recommended])
+  @@index([brand])
+}
+
+model ProductImage {
+  id           String   @id @default(cuid())
+  productId    String
+  imageUrl     String
+  altText      String?
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, displayOrder])
+}
+
+enum CategoryStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+model Category {
+  id            String         @id @default(cuid())
+  name          String
+  slug          String         @unique
+  description   String?
+  imageUrl      String?
+  status        CategoryStatus @default(ACTIVE)
+  featured      Boolean        @default(false)
+  displayOrder  Int            @default(0)
+  seoTitle      String?
+  seoDescription String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  products ProductCategory[]
+
+  @@index([status, featured])
+}
+
+model ProductCategory {
+  productId  String
+  categoryId String
+  assignedAt DateTime @default(now())
+
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@index([categoryId])
+}
+
+// Preserves old product URLs after a slug change (shared links keep working).
+model ProductRedirect {
+  id        String   @id @default(cuid())
+  oldSlug   String   @unique
+  productId String
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// Affiliate offers
+// ---------------------------------------------------------------------------
+
+enum OfferStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum AvailabilityStatus {
+  UNKNOWN
+  IN_STOCK
+  OUT_OF_STOCK
+  PREORDER
+}
+
+model AffiliateOffer {
+  id                 String             @id @default(cuid())
+  productId          String
+  retailerName       String
+  affiliateNetwork   String?
+  affiliateUrl       String             @db.Text
+  offerLabel         String?
+  displayedPrice     Decimal?           @db.Decimal(12, 2)
+  originalPrice      Decimal?           @db.Decimal(12, 2)
+  currency           String?
+  availabilityStatus AvailabilityStatus @default(UNKNOWN)
+  isPrimary          Boolean            @default(false)
+  trackingLabel      String?
+  status             OfferStatus        @default(ACTIVE)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  product Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  clicks  AffiliateClick[]
+
+  @@index([productId, status])
+}
+
+// ---------------------------------------------------------------------------
+// Website configuration & content
+// ---------------------------------------------------------------------------
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model ContentPage {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String        @unique
+  content        String        @db.Text
+  status         PublishStatus @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?
+  publishedAt    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status])
+}
+
+// ---------------------------------------------------------------------------
+// Click tracking & analytics (privacy-conscious: no raw IP addresses)
+// ---------------------------------------------------------------------------
+
+model AffiliateClick {
+  id               String   @id @default(cuid())
+  productId        String
+  affiliateOfferId String
+  clickedAt        DateTime @default(now())
+  referrer         String?
+  source           String?
+  medium           String?
+  campaign         String?
+  // SHA-256 hash of (ip + user-agent + daily salt) — pseudonymous, not reversible.
+  sessionHash      String?
+  userAgent        String?
+  isBot            Boolean  @default(false)
+
+  product Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  offer   AffiliateOffer @relation(fields: [affiliateOfferId], references: [id], onDelete: Cascade)
+
+  @@index([clickedAt])
+  @@index([productId, clickedAt])
+  @@index([affiliateOfferId, clickedAt])
+  @@index([source, clickedAt])
+  @@index([campaign, clickedAt])
+}
+
+// ---------------------------------------------------------------------------
+// Audit log
+// ---------------------------------------------------------------------------
+
+model AdminAuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  action      String
+  entityType  String
+  entityId    String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  actor User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([entityType, entityId])
+}
