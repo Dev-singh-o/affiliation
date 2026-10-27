@@ -1,16 +1,11 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
-import { ArrowRightIcon } from "lucide-react";
+import { Hero } from "@/components/public/hero";
 
 import { getSettings } from "@/lib/settings";
 import { getFeaturedProducts } from "@/lib/products/queries";
 import { getFeaturedCategories } from "@/lib/categories/queries";
 import { buildMetadata } from "@/lib/seo/metadata";
-import { Button } from "@/components/ui/button";
-import { ProductCard } from "@/components/public/product-card";
-import { CategoryCard } from "@/components/public/category-card";
 import { SectionRenderer } from "@/components/public/section-renderer";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -42,52 +37,13 @@ async function HomeBody() {
 
   return (
     <div>
-      <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
-          <div className="grid items-center gap-10 lg:grid-cols-2">
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                {hero.title}
-              </h1>
-              <p className="text-muted-foreground mt-4 text-lg">
-                {hero.subtitle}
-              </p>
-              {hero.intro ? (
-                <p className="text-muted-foreground mt-3">{hero.intro}</p>
-              ) : null}
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Button asChild size="lg">
-                  <Link href={hero.primaryCtaHref}>
-                    {hero.primaryCtaLabel}
-                    <ArrowRightIcon />
-                  </Link>
-                </Button>
-                {hero.secondaryCtaLabel ? (
-                  <Button asChild size="lg" variant="outline">
-                    <Link href={hero.secondaryCtaHref ?? "#"}>
-                      {hero.secondaryCtaLabel}
-                    </Link>
-                  </Button>
-                ) : null}
-              </div>
-            </div>
-            {hero.imageUrl ? (
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border">
-                <Image
-                  src={hero.imageUrl}
-                  alt={hero.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            ) : null}
-          </div>
-        </div>
-      </section>
+      <Hero
+        hero={hero}
+        branding={settings.branding}
+        socialLinks={settings.social.links}
+      />
 
-      <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <SectionRenderer
           sections={settings.homepage.sections}
           featuredProducts={featuredProducts}

@@ -1,10 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { HeartIcon } from "lucide-react";
+import { BadgeCheckIcon, HeartIcon, ArrowUpRightIcon } from "lucide-react";
 
-import { formatPrice, discountPercent } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { getSettings } from "@/lib/settings";
+import { formatPrice, discountPercent, cn } from "@/lib/utils";
 import type { Prisma } from "@/lib/generated/prisma/client";
 
 type ProductWithRelations = Prisma.ProductGetPayload<{
@@ -23,31 +21,30 @@ export function ProductCard({
   style?: "default" | "large" | "compact";
 }) {
   const image = product.images[0]?.imageUrl;
-  const primaryOffer = product.offers.find((o) => o.isPrimary) ?? product.offers[0];
+  const primaryOffer =
+    product.offers.find((o) => o.isPrimary) ?? product.offers[0];
   const price = primaryOffer?.displayedPrice?.toString();
   const original = primaryOffer?.originalPrice?.toString();
   const currency = primaryOffer?.currency;
   const discount = discountPercent(price, original);
-  const ctaLabel = primaryOffer?.offerLabel;
-
-  // We cannot await inside a sync component easily; use cached settings via a wrapper.
-  // Instead, fallback CTA text from offer or a generic label.
-  const ctaText = ctaLabel ?? "Check price";
+  const ctaText = primaryOffer?.offerLabel ?? "View deal";
 
   const isLarge = style === "large";
   const isCompact = style === "compact";
 
   return (
     <article
-      className={`group flex flex-col overflow-hidden rounded-2xl border bg-card transition-shadow hover:shadow-lg ${
-        isLarge ? "md:col-span-2 md:row-span-2" : ""
-      }`}
+      className={cn(
+        "group bg-card relative flex flex-col overflow-hidden rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5",
+        isLarge && "md:col-span-2 md:row-span-2",
+      )}
     >
       <Link href={`/products/${product.slug}`} className="relative block">
         <div
-          className={`relative w-full overflow-hidden bg-muted ${
-            isCompact ? "aspect-square" : "aspect-[4/3]"
-          }`}
+          className={cn(
+            "bg-muted relative w-full overflow-hidden",
+            isCompact ? "aspect-square" : isLarge ? "aspect-[16/10]" : "aspect-[4/3]",
+          )}
         >
           {image ? (
             <Image
@@ -55,67 +52,87 @@ export function ProductCard({
               alt={product.images[0]?.altText ?? product.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-muted-foreground">
+            <div className="text-muted-foreground flex h-full items-center justify-center">
               <HeartIcon className="size-8" aria-hidden />
             </div>
           )}
-          {product.recommended ? (
-            <span className="absolute left-3 top-3 rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground">
-              Recommended
-            </span>
-          ) : null}
-          {discount ? (
-            <span className="absolute right-3 top-3 rounded-full bg-destructive px-2.5 py-1 text-xs font-semibold text-destructive-foreground">
-              -{discount}%
-            </span>
-          ) : null}
+          {/* top badges */}
+          <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
+            {product.recommended ? (
+              <span className="bg-primary text-primary-foreground inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-sm">
+                <BadgeCheckIcon className="size-3" aria-hidden />
+                Creator pick
+              </span>
+            ) : (
+              <span />
+            )}
+            {discount ? (
+              <span className="bg-destructive text-destructive-foreground rounded-full px-2.5 py-1 text-[11px] font-bold shadow-sm">
+                -{discount}%
+              </span>
+            ) : null}
+          </div>
+          {/* hover CTA affordance */}
+          <div className="bg-foreground/70 text-background absolute bottom-3 right-3 flex size-8 translate-y-1 items-center justify-center rounded-full opacity-0 backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+            <ArrowUpRightIcon className="size-4" aria-hidden />
+          </div>
         </div>
       </Link>
 
-      <div className={`flex flex-1 flex-col gap-2 p-4 ${isCompact ? "p-3" : ""}`}>
+      <div className={cn("flex flex-1 flex-col gap-2 p-4", isCompact && "p-3")}>
         {product.brand ? (
-          <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
+          <p className="text-muted-foreground text-[11px] font-semibold uppercase tracking-wider">
             {product.brand}
           </p>
         ) : null}
         <Link href={`/products/${product.slug}`}>
           <h3
-            className={`font-semibold leading-tight tracking-tight ${
-              isLarge ? "text-xl" : "text-base"
-            }`}
+            className={cn(
+              "font-display font-semibold leading-snug tracking-tight transition-colors group-hover:text-primary",
+              isLarge ? "text-xl" : "text-base",
+            )}
           >
             {product.name}
           </h3>
         </Link>
-        {product.shortDescription ? (
-          <p className="text-muted-foreground line-clamp-2 text-sm">
+        {!isCompact && product.shortDescription ? (
+          <p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed">
             {product.shortDescription}
           </p>
         ) : null}
 
         <div className="mt-auto flex items-end justify-between gap-2 pt-3">
-          <div>
+          <div className="min-w-0">
             {price ? (
-              <p className="text-lg font-bold">{formatPrice(price, currency)}</p>
-            ) : null}
-            {original && original !== price ? (
-              <p className="text-muted-foreground text-sm line-through">
-                {formatPrice(original, currency)}
-              </p>
+              <div className="flex flex-wrap items-baseline gap-x-2">
+                <span className={cn("font-bold", isCompact ? "text-base" : "text-lg")}>
+                  {formatPrice(price, currency)}
+                </span>
+                {original && original !== price ? (
+                  <span className="text-muted-foreground text-sm line-through">
+                    {formatPrice(original, currency)}
+                  </span>
+                ) : null}
+              </div>
             ) : null}
             {primaryOffer?.retailerName ? (
-              <p className="text-muted-foreground text-xs">
-                {primaryOffer.retailerName}
+              <p className="text-muted-foreground mt-0.5 truncate text-xs">
+                at {primaryOffer.retailerName}
               </p>
             ) : null}
           </div>
-          <Button asChild size={isCompact ? "sm" : "default"}>
-            <Link href={`/products/${product.slug}`}>{ctaText}</Link>
-          </Button>
         </div>
+      </div>
+
+      {/* full-card CTA footer */}
+      <div className="border-t px-4 py-3">
+        <span className="text-primary inline-flex items-center gap-1 text-sm font-semibold">
+          {ctaText}
+          <ArrowUpRightIcon className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden />
+        </span>
       </div>
     </article>
   );

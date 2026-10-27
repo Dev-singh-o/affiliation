@@ -1,8 +1,12 @@
+import Link from "next/link";
+import { ArrowRightIcon } from "lucide-react";
+
 import { getSettings } from "@/lib/settings";
 import { getRecommendedProducts, getRecentProducts, getTrendingProducts } from "@/lib/products/queries";
 import { CategoryCard } from "@/components/public/category-card";
 import { ProductCard } from "@/components/public/product-card";
 import type { Prisma } from "@/lib/generated/prisma/client";
+import { Reveal } from "@/components/public/reveal";
 
 type Product = Prisma.ProductGetPayload<{
   include: { images: true; categories: { include: { category: true } }; offers: true };
@@ -136,28 +140,44 @@ function SectionWrapper({
   ctaLabel,
   ctaHref,
   children,
+  delay = 0,
 }: {
   title: string;
   subtitle?: string;
   ctaLabel?: string;
   ctaHref?: string;
   children: React.ReactNode;
+  delay?: number;
 }) {
   return (
-    <section>
-      <div className="mb-4 flex items-end justify-between gap-4">
-        <div>
-          {title ? <h2 className="text-2xl font-bold tracking-tight">{title}</h2> : null}
-          {subtitle ? <p className="text-muted-foreground mt-1">{subtitle}</p> : null}
+    <Reveal delay={delay}>
+      <section>
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <div>
+            {title ? (
+              <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+                {title}
+              </h2>
+            ) : null}
+            {subtitle ? (
+              <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed">
+                {subtitle}
+              </p>
+            ) : null}
+          </div>
+          {ctaLabel && ctaHref ? (
+            <Link
+              href={ctaHref}
+              className="text-primary hover:text-primary/80 inline-flex items-center gap-1 text-sm font-semibold transition-colors"
+            >
+              {ctaLabel}
+              <ArrowRightIcon className="size-4" aria-hidden />
+            </Link>
+          ) : null}
         </div>
-        {ctaLabel && ctaHref ? (
-          <a href={ctaHref} className="text-sm font-medium text-primary hover:underline">
-            {ctaLabel} →
-          </a>
-        ) : null}
-      </div>
-      {children}
-    </section>
+        {children}
+      </section>
+    </Reveal>
   );
 }
 

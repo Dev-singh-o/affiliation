@@ -130,7 +130,9 @@ async function ProductBody({ params }: { params: Params }) {
               {product.brand}
             </p>
           ) : null}
-          <h1 className="text-3xl font-bold tracking-tight">{product.name}</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+            {product.name}
+          </h1>
 
           {product.recommended ? (
             <Badge variant="default">Recommended by creator</Badge>
@@ -202,9 +204,12 @@ async function ProductBody({ params }: { params: Params }) {
           <p className="text-muted-foreground text-xs">{disclosure}</p>
 
           {product.recommendationText ? (
-            <div className="rounded-xl border bg-card p-4">
-              <p className="text-sm font-semibold">Creator&apos;s take</p>
-              <p className="text-muted-foreground mt-1 text-sm">
+            <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-primary/10 via-background to-accent/40 p-6">
+              <span className="font-display text-primary/30 absolute -top-2 left-4 text-7xl leading-none">
+                &ldquo;
+              </span>
+              <p className="text-sm font-semibold text-primary">Creator&apos;s take</p>
+              <p className="font-display relative mt-2 text-lg leading-relaxed text-foreground/90">
                 {product.recommendationText}
               </p>
             </div>

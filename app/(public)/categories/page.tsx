@@ -34,7 +34,9 @@ async function CategoriesContent() {
   }
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-      <h1 className="mb-6 text-3xl font-bold tracking-tight">Categories</h1>
+      <h1 className="font-display mb-6 text-3xl font-semibold tracking-tight sm:text-4xl">
+        Categories
+      </h1>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {categories.map((category) => (
           <CategoryCard key={category.id} category={category} />

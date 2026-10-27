@@ -68,7 +68,9 @@ async function ProductsContent({ searchParams }: { searchParams: SearchParams })
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Products</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+          Products
+        </h1>
         <p className="text-muted-foreground mt-1">
           {result.total} product{result.total === 1 ? "" : "s"} found
         </p>

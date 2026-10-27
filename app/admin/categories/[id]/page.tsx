@@ -15,7 +15,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function EditCategoryPage({
+export default function EditCategoryPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  return (
+    <Suspense fallback={<Skeleton className="h-96 w-full" />}>
+      <EditCategoryContent params={params} />
+    </Suspense>
+  );
+}
+
+async function EditCategoryContent({
   params,
 }: {
   params: Promise<{ id: string }>;

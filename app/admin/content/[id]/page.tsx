@@ -13,7 +13,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function EditContentPage({
+export default function EditContentPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  return (
+    <Suspense fallback={<Skeleton className="h-96 w-full" />}>
+      <EditContentBody params={params} />
+    </Suspense>
+  );
+}
+
+async function EditContentBody({
   params,
 }: {
   params: Promise<{ id: string }>;

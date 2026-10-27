@@ -21,7 +21,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function EditProductPage({
+export default function EditProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  return (
+    <Suspense fallback={<Skeleton className="h-96 w-full" />}>
+      <EditProductContent params={params} />
+    </Suspense>
+  );
+}
+
+async function EditProductContent({
   params,
 }: {
   params: Promise<{ id: string }>;

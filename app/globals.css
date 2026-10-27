@@ -90,12 +90,49 @@
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-display), Georgia, "Times New Roman", serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+/* Display serif for hero headlines and section titles (creator brand feel). */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Scroll-reveal animation (JS adds .is-visible; reduced-motion safe). */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Soft aurora gradient used by the hero background. */
+.hero-aurora {
+  background:
+    radial-gradient(60% 80% at 20% 10%, color-mix(in oklab, var(--primary) 26%, transparent) 0%, transparent 70%),
+    radial-gradient(50% 70% at 85% 20%, color-mix(in oklab, var(--primary) 16%, transparent) 0%, transparent 70%),
+    radial-gradient(40% 60% at 50% 100%, color-mix(in oklab, var(--accent) 60%, transparent) 0%, transparent 75%);
 }
 
 @media (prefers-reduced-motion: reduce) {
