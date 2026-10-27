@@ -168,12 +168,12 @@ export async function getRecommendedProducts(limit = 8) {
   cacheLife("minutes");
   cacheTag("products");
   try {
-    return await prisma.product.findMany({
+    return serializeProducts(await prisma.product.findMany({
       where: { status: "PUBLISHED", recommended: true },
       include: productInclude,
       orderBy: [{ displayOrder: "asc" }, { publishedAt: "desc" }],
       take: limit,
-    });
+    }));
   } catch (error) {
     console.error("Failed to load recommended products:", error);
     return [];
@@ -185,12 +185,12 @@ export async function getRecentProducts(limit = 8) {
   cacheLife("minutes");
   cacheTag("products");
   try {
-    return await prisma.product.findMany({
+    return serializeProducts(await prisma.product.findMany({
       where: { status: "PUBLISHED" },
       include: productInclude,
       orderBy: { publishedAt: "desc" },
       take: limit,
-    });
+    }));
   } catch (error) {
     console.error("Failed to load recent products:", error);
     return [];
@@ -216,7 +216,7 @@ export async function getTrendingProducts(limit = 8) {
       orderBy: { publishedAt: "desc" },
       take: limit - featured.length,
     });
-    return [...featured, ...more];
+    return serializeProducts([...featured, ...more]);
   } catch (error) {
     console.error("Failed to load trending products:", error);
     return [];
@@ -228,7 +228,7 @@ export async function getRelatedProducts(productId: string, categoryIds: string[
   cacheLife("minutes");
   cacheTag("products");
   try {
-    return await prisma.product.findMany({
+    return serializeProducts(await prisma.product.findMany({
       where: {
         status: "PUBLISHED",
         id: { not: productId },
@@ -239,7 +239,7 @@ export async function getRelatedProducts(productId: string, categoryIds: string[
       include: productInclude,
       orderBy: { publishedAt: "desc" },
       take: limit,
-    });
+    }));
   } catch (error) {
     console.error("Failed to load related products:", error);
     return [];
@@ -279,4 +279,6 @@ export async function listAllRetailers(): Promise<string[]> {
     return rows.map((r) => r.retailerName).sort((a, b) => a.localeCompare(b));
   } catch (error) {
     console.error("Failed to load retailers:", error);
-    r
+    return [];
+  }
+}

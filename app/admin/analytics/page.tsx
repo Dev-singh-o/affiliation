@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import Link from "next/link";
 import {
   BarChart3Icon,
@@ -37,6 +38,7 @@ export default function AnalyticsPage({
 
 async function AnalyticsContent({ searchParams }: { searchParams: SearchParams }) {
   const { range } = await searchParams;
+  await connection();
   const resolved = resolveRange(range);
   const analytics = await getClickAnalytics(resolved);
 

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import Link from "next/link";
 import {
   BarChart3Icon,
@@ -89,6 +90,7 @@ async function DashboardContent({
   searchParams: SearchParams;
 }) {
   const { range } = await searchParams;
+  await connection();
   const resolved = resolveRange(range);
   const [counts, analytics, totalClicks, auditLogs] = await Promise.all([
     getCatalogCounts(),

@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db/prisma";
@@ -16,6 +17,7 @@ export interface SessionUser {
  * React cache() dedupes per request.
  */
 export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
+  await connection();
   const session = await auth();
   if (!session?.user?.id) return null;
   return {
