@@ -51,7 +51,7 @@ export function SectionHeader({
       {actionLabel && actionHref ? (
         <Link
           href={actionHref}
-          className="group text-primary inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold transition-colors hover:text-primary/80"
+          className="group text-primary -mx-2 inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm font-semibold transition-colors hover:text-primary/80"
         >
           {actionLabel}
           <ArrowRightIcon

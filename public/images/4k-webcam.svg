@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="4K Webcam">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8f4ef"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#a8dcc8" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#a8dcc8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <rect width="1200" height="900" fill="url(#glow)"/>
+  <g opacity="0.16" fill="none" stroke="#1f6b52" stroke-width="2">
+    <circle cx="600" cy="390" r="190"/>
+    <circle cx="600" cy="390" r="250"/>
+    <circle cx="600" cy="390" r="310"/>
+  </g>
+  <rect x="470" y="286" width="260" height="300" rx="44" fill="#ffffff" opacity="0.9"/>
+  <rect x="470" y="286" width="260" height="300" rx="44" fill="none" stroke="#1f6b52" stroke-opacity="0.18" stroke-width="3"/>
+  <text x="600" y="450" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="104" fill="#1f6b52" fill-opacity="0.85">4W</text>
+  <text x="600" y="700" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="34" fill="#1f6b52" fill-opacity="0.6" letter-spacing="1">4K Webcam</text>
+</svg>

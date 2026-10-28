@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Desk Setup">
+  <defs>
+    <linearGradient id="cbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e9f2f4"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#cbg)"/>
+  <g fill="none" stroke="#26606b" stroke-opacity="0.22" stroke-width="3">
+    <rect x="150" y="150" width="360" height="300" rx="36"/>
+    <rect x="580" y="150" width="470" height="300" rx="36"/>
+    <rect x="150" y="500" width="900" height="260" rx="36"/>
+  </g>
+  <g fill="#26606b" fill-opacity="0.5">
+    <circle cx="330" cy="300" r="52"/>
+    <rect x="640" y="250" width="350" height="24" rx="12"/>
+    <rect x="640" y="300" width="260" height="18" rx="9"/>
+    <rect x="210" y="600" width="500" height="22" rx="11"/>
+    <rect x="210" y="648" width="380" height="16" rx="8"/>
+  </g>
+  <text x="600" y="840" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="38" fill="#26606b" fill-opacity="0.65" letter-spacing="2">DESK SETUP</text>
+</svg>

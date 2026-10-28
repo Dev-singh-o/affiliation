@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Carry On Backpack">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e9f2f4"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#b0d8de" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#b0d8de" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <rect width="1200" height="900" fill="url(#glow)"/>
+  <g opacity="0.16" fill="none" stroke="#26606b" stroke-width="2">
+    <circle cx="600" cy="390" r="190"/>
+    <circle cx="600" cy="390" r="250"/>
+    <circle cx="600" cy="390" r="310"/>
+  </g>
+  <rect x="470" y="286" width="260" height="300" rx="44" fill="#ffffff" opacity="0.9"/>
+  <rect x="470" y="286" width="260" height="300" rx="44" fill="none" stroke="#26606b" stroke-opacity="0.18" stroke-width="3"/>
+  <text x="600" y="450" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="104" fill="#26606b" fill-opacity="0.85">CO</text>
+  <text x="600" y="700" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="34" fill="#26606b" fill-opacity="0.6" letter-spacing="1">Carry On Backpack</text>
+</svg>

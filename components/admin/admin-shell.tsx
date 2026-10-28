@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useTransition } from "react";
+import { type ReactNode, useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -92,6 +92,7 @@ export function AdminShell({
   children: ReactNode;
 }) {
   const [pending, startTransition] = useTransition();
+  const [navOpen, setNavOpen] = useState(false);
   const initials = (user.name ?? user.email)
     .split(/\s+/)
     .map((part) => part[0])
@@ -129,7 +130,7 @@ export function AdminShell({
         {/* Topbar */}
         <header className="bg-background/85 sticky top-0 z-40 flex h-[68px] items-center justify-between gap-4 border-b border-border px-5 backdrop-blur-xl sm:px-8">
           <div className="flex items-center gap-2">
-            <Sheet>
+            <Sheet open={navOpen} onOpenChange={setNavOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
@@ -144,7 +145,7 @@ export function AdminShell({
                 <SheetTitle className="mb-4 text-left text-lg font-bold">
                   Storefront Admin
                 </SheetTitle>
-                <NavLinks />
+                <NavLinks onNavigate={() => setNavOpen(false)} />
               </SheetContent>
             </Sheet>
             <span className="text-muted-foreground hidden text-sm lg:block">

@@ -137,14 +137,14 @@ export async function PublicFooter() {
             <p className="text-[11px] font-semibold tracking-[0.14em] uppercase">
               Explore
             </p>
-            <ul className="mt-5 space-y-3">
+            <ul className="mt-4 space-y-1">
               {nav.map((item) => (
                 <li key={item.id}>
                   <Link
                     href={item.href}
                     target={item.external ? "_blank" : undefined}
                     rel={item.external ? "noopener noreferrer" : undefined}
-                    className="text-muted-foreground hover:text-foreground text-[15px] transition-colors"
+                    className="text-muted-foreground hover:text-foreground -mx-2 flex min-h-10 items-center rounded-md px-2 text-[15px] transition-colors"
                   >
                     {item.label}
                   </Link>
