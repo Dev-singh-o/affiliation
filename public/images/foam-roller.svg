@@ -1,23 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Recovery Foam Roller">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="bg-p6" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#f6f2e4"/>
       <stop offset="100%" stop-color="#ffffff"/>
     </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="42%" r="55%">
-      <stop offset="0%" stop-color="#ddd2a4" stop-opacity="0.85"/>
+    <radialGradient id="glow-p6" cx="50%" cy="38%" r="60%">
+      <stop offset="0%" stop-color="#ddd2a4" stop-opacity="0.75"/>
       <stop offset="100%" stop-color="#ddd2a4" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <rect width="1200" height="900" fill="url(#bg)"/>
-  <rect width="1200" height="900" fill="url(#glow)"/>
-  <g opacity="0.16" fill="none" stroke="#6b5a1f" stroke-width="2">
-    <circle cx="600" cy="390" r="190"/>
-    <circle cx="600" cy="390" r="250"/>
-    <circle cx="600" cy="390" r="310"/>
+  <rect width="1200" height="900" fill="url(#bg-p6)"/>
+  <rect width="1200" height="900" fill="url(#glow-p6)"/>
+  <g opacity="0.14" fill="none" stroke="#6b5a1f" stroke-width="2">
+    <circle cx="600" cy="380" r="200"/>
+    <circle cx="600" cy="380" r="262"/>
+    <circle cx="600" cy="380" r="324"/>
   </g>
-  <rect x="470" y="286" width="260" height="300" rx="44" fill="#ffffff" opacity="0.9"/>
-  <rect x="470" y="286" width="260" height="300" rx="44" fill="none" stroke="#6b5a1f" stroke-opacity="0.18" stroke-width="3"/>
-  <text x="600" y="450" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="104" fill="#6b5a1f" fill-opacity="0.85">RF</text>
-  <text x="600" y="700" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="34" fill="#6b5a1f" fill-opacity="0.6" letter-spacing="1">Recovery Foam Roller</text>
+  <rect x="455" y="265" width="290" height="330" rx="48" fill="#fbf8ee" stroke="#6b5a1f" stroke-opacity="0.2" stroke-width="3"/>
+  <text x="600" y="455" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="112" fill="#6b5a1f" fill-opacity="0.85">RF</text>
+  <text x="600" y="710" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="34" fill="#6b5a1f" fill-opacity="0.55" letter-spacing="1">Recovery Foam Roller</text>
 </svg>

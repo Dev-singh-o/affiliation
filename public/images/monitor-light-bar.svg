@@ -1,23 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Monitor Light Bar">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="bg-p9" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#eef0e6"/>
       <stop offset="100%" stop-color="#ffffff"/>
     </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="42%" r="55%">
-      <stop offset="0%" stop-color="#cbd6ab" stop-opacity="0.85"/>
+    <radialGradient id="glow-p9" cx="50%" cy="38%" r="60%">
+      <stop offset="0%" stop-color="#cbd6ab" stop-opacity="0.75"/>
       <stop offset="100%" stop-color="#cbd6ab" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <rect width="1200" height="900" fill="url(#bg)"/>
-  <rect width="1200" height="900" fill="url(#glow)"/>
-  <g opacity="0.16" fill="none" stroke="#4d5c2a" stroke-width="2">
-    <circle cx="600" cy="390" r="190"/>
-    <circle cx="600" cy="390" r="250"/>
-    <circle cx="600" cy="390" r="310"/>
+  <rect width="1200" height="900" fill="url(#bg-p9)"/>
+  <rect width="1200" height="900" fill="url(#glow-p9)"/>
+  <g opacity="0.14" fill="none" stroke="#4d5c2a" stroke-width="2">
+    <circle cx="600" cy="380" r="200"/>
+    <circle cx="600" cy="380" r="262"/>
+    <circle cx="600" cy="380" r="324"/>
   </g>
-  <rect x="470" y="286" width="260" height="300" rx="44" fill="#ffffff" opacity="0.9"/>
-  <rect x="470" y="286" width="260" height="300" rx="44" fill="none" stroke="#4d5c2a" stroke-opacity="0.18" stroke-width="3"/>
-  <text x="600" y="450" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="104" fill="#4d5c2a" fill-opacity="0.85">ML</text>
-  <text x="600" y="700" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="34" fill="#4d5c2a" fill-opacity="0.6" letter-spacing="1">Monitor Light Bar</text>
+  <rect x="455" y="265" width="290" height="330" rx="48" fill="#f6f8f1" stroke="#4d5c2a" stroke-opacity="0.2" stroke-width="3"/>
+  <text x="600" y="455" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="112" fill="#4d5c2a" fill-opacity="0.85">ML</text>
+  <text x="600" y="710" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="34" fill="#4d5c2a" fill-opacity="0.55" letter-spacing="1">Monitor Light Bar</text>
 </svg>
