@@ -201,22 +201,30 @@ export async function getTrendingProducts(limit = 8) {
   "use cache";
   cacheLife("minutes");
   cacheTag("products");
-  // "Trending" = featured OR recommended, falling back to newest.
+  // "Trending" = most-clicked published products (real analytics only).
+  // Returns [] when there is no click data so callers can fall back to a
+  // curated selection. Popularity is never fabricated.
   try {
-    const featured = await prisma.product.findMany({
-      where: { status: "PUBLISHED", OR: [{ featured: true }, { recommended: true }] },
-      include: productInclude,
-      orderBy: [{ displayOrder: "asc" }, { publishedAt: "desc" }],
+    const grouped = await prisma.affiliateClick.groupBy({
+      by: ["productId"],
+      where: { isBot: false, product: { status: "PUBLISHED" } },
+      _count: { _all: true },
+      orderBy: { _count: { productId: "desc" } },
       take: limit,
     });
-    if (featured.length >= limit) return featured;
-    const more = await prisma.product.findMany({
-      where: { status: "PUBLISHED", NOT: { id: { in: featured.map((p) => p.id) } } },
+    if (grouped.length === 0) return [];
+
+    const products = await prisma.product.findMany({
+      where: {
+        id: { in: grouped.map((g) => g.productId) },
+        status: "PUBLISHED",
+      },
       include: productInclude,
-      orderBy: { publishedAt: "desc" },
-      take: limit - featured.length,
     });
-    return serializeProducts([...featured, ...more]);
+    const rank = new Map(grouped.map((g, i) => [g.productId, i]));
+    return serializeProducts(
+      products.sort((a, b) => (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0)),
+    );
   } catch (error) {
     console.error("Failed to load trending products:", error);
     return [];

@@ -1,9 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PlusIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,

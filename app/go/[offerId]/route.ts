@@ -1,4 +1,3 @@
-import { permanentRedirect, redirect } from "next/navigation";
 import { headers } from "next/headers";
 
 import { prisma } from "@/lib/db/prisma";

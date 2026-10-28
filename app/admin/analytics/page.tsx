@@ -1,10 +1,6 @@
 import { Suspense } from "react";
 import { connection } from "next/server";
 import Link from "next/link";
-import {
-  BarChart3Icon,
-  MousePointerClickIcon,
-} from "lucide-react";
 
 import { getClickAnalytics, resolveRange } from "@/lib/analytics/queries";
 import { formatNumber } from "@/lib/utils";

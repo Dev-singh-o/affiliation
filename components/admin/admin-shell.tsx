@@ -102,9 +102,12 @@ export function AdminShell({
   return (
     <div className="flex min-h-svh">
       {/* Desktop sidebar */}
-      <aside className="bg-card sticky top-0 hidden h-svh w-64 shrink-0 flex-col border-r lg:flex">
-        <div className="flex h-16 items-center border-b px-4">
-          <Link href="/admin" className="text-lg font-bold tracking-tight">
+      <aside className="bg-card sticky top-0 hidden h-svh w-64 shrink-0 flex-col border-r border-border lg:flex">
+        <div className="flex h-[68px] items-center border-b border-border px-5">
+          <Link
+            href="/admin"
+            className="font-display text-[15px] font-semibold tracking-tight"
+          >
             Storefront Admin
           </Link>
         </div>
@@ -124,17 +127,17 @@ export function AdminShell({
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Topbar */}
-        <header className="bg-background/95 sticky top-0 z-40 flex h-16 items-center justify-between gap-4 border-b px-4 backdrop-blur lg:px-6">
+        <header className="bg-background/85 sticky top-0 z-40 flex h-[68px] items-center justify-between gap-4 border-b border-border px-5 backdrop-blur-xl sm:px-8">
           <div className="flex items-center gap-2">
             <Sheet>
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
-                  size="icon"
+                  size="icon-sm"
                   className="lg:hidden"
                   aria-label="Open navigation"
                 >
-                  <MenuIcon />
+                  <MenuIcon className="size-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-72 p-4">
@@ -186,7 +189,7 @@ export function AdminShell({
           </DropdownMenu>
         </header>
 
-        <main className="flex-1 p-4 lg:p-6">{children}</main>
+        <main className="flex-1 px-5 py-8 sm:px-8">{children}</main>
       </div>
     </div>
   );

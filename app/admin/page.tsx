@@ -62,15 +62,21 @@ function StatCard({
   hint?: string;
 }) {
   const body = (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{label}</CardTitle>
-        <Icon className="text-muted-foreground size-4" aria-hidden />
+    <Card className="h-full overflow-hidden transition-shadow hover:shadow-sm">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {label}
+        </CardTitle>
+        <span className="bg-accent text-accent-foreground flex size-8 items-center justify-center rounded-lg">
+          <Icon className="size-4" aria-hidden />
+        </span>
       </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+      <CardContent className="pt-0">
+        <div className="text-2xl font-semibold tracking-tight">{value}</div>
         {hint ? (
-          <p className="text-muted-foreground text-xs">{hint}</p>
+          <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
+            {hint}
+          </p>
         ) : null}
       </CardContent>
     </Card>

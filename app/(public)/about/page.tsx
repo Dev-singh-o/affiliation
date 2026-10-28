@@ -1,10 +1,9 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getSettings } from "@/lib/settings";
 import { buildMetadata } from "@/lib/seo/metadata";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Container } from "@/components/ui/container";
+import { Button } from "@/components/ui/button";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -16,14 +15,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <h1 className="text-3xl font-bold tracking-tight">About</h1>
-      <p className="text-muted-foreground mt-4">
+    <Container size="narrow" className="py-16 sm:py-24">
+      <h1 className="font-display text-editorial-lg font-semibold tracking-tight">
+        About
+      </h1>
+      <p className="text-muted-foreground mt-4 max-w-xl text-[15px] leading-relaxed">
         This page can be managed from the admin dashboard under Content.
       </p>
-      <Link href="/pages/about" className="text-primary mt-4 inline-block hover:underline">
-        View configured About page →
-      </Link>
-    </div>
+      <Button asChild variant="outline" className="mt-6">
+        <Link href="/pages/about">Read the About page →</Link>
+      </Button>
+    </Container>
   );
 }

@@ -1,23 +1,24 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { getActiveCategories } from "@/lib/categories/queries";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { CategoryCard } from "@/components/public/category-card";
+import { SectionHeader } from "@/components/public/section-header";
+import { Container } from "@/components/ui/container";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "Categories",
-    description: "Browse all product categories.",
+    description: "Browse every product category.",
     canonicalPath: "/categories",
   });
 }
 
 export default function CategoriesPage() {
   return (
-    <Suspense fallback={<Skeleton className="h-96 w-full" />}>
+    <Suspense fallback={<CategoriesSkeleton />}>
       <CategoriesContent />
     </Suspense>
   );
@@ -25,23 +26,43 @@ export default function CategoriesPage() {
 
 async function CategoriesContent() {
   const categories = await getActiveCategories();
-  if (categories.length === 0) {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold">No categories yet</h1>
-      </div>
-    );
-  }
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-      <h1 className="font-display mb-6 text-3xl font-semibold tracking-tight sm:text-4xl">
-        Categories
-      </h1>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {categories.map((category) => (
-          <CategoryCard key={category.id} category={category} />
+    <Container className="py-12 sm:py-16">
+      <SectionHeader
+        eyebrow="Browse"
+        title="Shop by category"
+        description="Everything I recommend, organised so you can find it fast."
+        headingLevel="h1"
+      />
+
+      {categories.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-border px-6 py-20 text-center">
+          <p className="font-display text-xl font-semibold">No categories yet</p>
+          <p className="text-muted-foreground mt-2 text-[15px]">
+            Categories are being set up — check back soon.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+          {categories.map((category) => (
+            <CategoryCard key={category.id} category={category} />
+          ))}
+        </div>
+      )}
+    </Container>
+  );
+}
+
+function CategoriesSkeleton() {
+  return (
+    <Container className="py-12">
+      <Skeleton className="mb-10 h-10 w-72" />
+      <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <Skeleton key={i} className="aspect-[4/3] w-full rounded-2xl" />
         ))}
       </div>
-    </div>
+    </Container>
   );
 }

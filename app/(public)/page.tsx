@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { Hero } from "@/components/public/hero";
 
 import { getSettings } from "@/lib/settings";
 import { getFeaturedProducts } from "@/lib/products/queries";
 import { getFeaturedCategories } from "@/lib/categories/queries";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { Container } from "@/components/ui/container";
+import { Hero } from "@/components/public/hero";
 import { SectionRenderer } from "@/components/public/section-renderer";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -29,36 +30,48 @@ export default function HomePage() {
 async function HomeBody() {
   const settings = await getSettings();
   const [featuredProducts, featuredCategories] = await Promise.all([
-    getFeaturedProducts(12),
+    getFeaturedProducts(8),
     getFeaturedCategories(8),
   ]);
 
   const hero = settings.homepage.hero;
 
   return (
-    <div>
+    <>
       <Hero
         hero={hero}
         branding={settings.branding}
         socialLinks={settings.social.links}
       />
 
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <Container className="py-16 sm:py-20 lg:py-24">
         <SectionRenderer
           sections={settings.homepage.sections}
           featuredProducts={featuredProducts}
           featuredCategories={featuredCategories}
         />
-      </div>
-    </div>
+      </Container>
+    </>
   );
 }
 
 function HomeSkeleton() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-      <Skeleton className="mb-6 h-12 w-2/3" />
-      <Skeleton className="h-64 w-full rounded-2xl" />
+    <div>
+      <div className="hero-wash border-b border-border">
+        <Container className="py-16">
+          <Skeleton className="h-6 w-32 rounded-full" />
+          <Skeleton className="mt-6 h-16 w-full max-w-2xl" />
+          <Skeleton className="mt-4 h-6 w-full max-w-xl" />
+        </Container>
+      </div>
+      <Container className="py-16">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="aspect-[4/3] w-full rounded-2xl" />
+          ))}
+        </div>
+      </Container>
     </div>
   );
 }

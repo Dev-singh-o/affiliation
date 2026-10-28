@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Loader2Icon, UploadIcon } from "lucide-react";
 
 import { uploadImage } from "@/lib/storage/upload-client";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 export function ImageUploader({
