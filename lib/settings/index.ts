@@ -1,6 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma, withRetry } from "@/lib/db/prisma";
 import {
   defaultSettings,
   type SettingKey,
@@ -38,9 +38,11 @@ export async function getSettings(): Promise<SettingsMap> {
 
   let rows: { key: string; value: unknown }[] = [];
   try {
-    rows = await prisma.siteSetting.findMany({
-      select: { key: true, value: true },
-    });
+    rows = await withRetry(() =>
+      prisma.siteSetting.findMany({
+        select: { key: true, value: true },
+      }),
+    );
   } catch (error) {
     // DB unavailable (e.g. first build without env) — serve defaults.
     console.error("Failed to load settings, using defaults:", error);

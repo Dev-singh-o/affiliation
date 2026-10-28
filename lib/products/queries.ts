@@ -1,6 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma, withRetry } from "@/lib/db/prisma";
 
 const productInclude = {
   images: { orderBy: { displayOrder: "asc" as const } },
@@ -100,14 +100,16 @@ export async function listPublishedProducts(params: {
 
   try {
     const [items, total] = await Promise.all([
-      prisma.product.findMany({
-        where,
-        include: productInclude,
-        orderBy,
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-      }),
-      prisma.product.count({ where }),
+      withRetry(() =>
+        prisma.product.findMany({
+          where,
+          include: productInclude,
+          orderBy,
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+        }),
+      ),
+      withRetry(() => prisma.product.count({ where })),
     ]);
     return { items: serializeProducts(items), total, page, pageSize, totalPages: Math.max(1, Math.ceil(total / pageSize)) };
   } catch (error) {
@@ -124,18 +126,22 @@ export async function getProductBySlug(slug: string) {
   // Honor legacy redirects: if someone hits an old slug, the page layer
   // calls permanentRedirect. We expose the redirect target here.
   try {
-    const redirect = await prisma.productRedirect.findUnique({
-      where: { oldSlug: slug },
-      select: { product: { select: { slug: true } } },
-    });
+    const redirect = await withRetry(() =>
+      prisma.productRedirect.findUnique({
+        where: { oldSlug: slug },
+        select: { product: { select: { slug: true } } },
+      }),
+    );
     if (redirect?.product) {
       return { kind: "redirect" as const, slug: redirect.product.slug };
     }
 
-    const product = await prisma.product.findUnique({
-      where: { slug },
-      include: productInclude,
-    });
+    const product = await withRetry(() =>
+      prisma.product.findUnique({
+        where: { slug },
+        include: productInclude,
+      }),
+    );
     if (!product || product.status !== "PUBLISHED") {
       return null;
     }
@@ -151,12 +157,16 @@ export async function getFeaturedProducts(limit = 6) {
   cacheLife("minutes");
   cacheTag("products");
   try {
-    return serializeProducts(await prisma.product.findMany({
+    return serializeProducts(
+      await withRetry(() =>
+        prisma.product.findMany({
       where: { status: "PUBLISHED", featured: true },
       include: productInclude,
       orderBy: [{ displayOrder: "asc" }, { publishedAt: "desc" }],
       take: limit,
-    }));
+    }),
+      ),
+    );
   } catch (error) {
     console.error("Failed to load featured products:", error);
     return [];
@@ -168,12 +178,16 @@ export async function getRecommendedProducts(limit = 8) {
   cacheLife("minutes");
   cacheTag("products");
   try {
-    return serializeProducts(await prisma.product.findMany({
+    return serializeProducts(
+      await withRetry(() =>
+        prisma.product.findMany({
       where: { status: "PUBLISHED", recommended: true },
       include: productInclude,
       orderBy: [{ displayOrder: "asc" }, { publishedAt: "desc" }],
       take: limit,
-    }));
+    }),
+      ),
+    );
   } catch (error) {
     console.error("Failed to load recommended products:", error);
     return [];
@@ -185,12 +199,16 @@ export async function getRecentProducts(limit = 8) {
   cacheLife("minutes");
   cacheTag("products");
   try {
-    return serializeProducts(await prisma.product.findMany({
+    return serializeProducts(
+      await withRetry(() =>
+        prisma.product.findMany({
       where: { status: "PUBLISHED" },
       include: productInclude,
       orderBy: { publishedAt: "desc" },
       take: limit,
-    }));
+    }),
+      ),
+    );
   } catch (error) {
     console.error("Failed to load recent products:", error);
     return [];
@@ -205,22 +223,26 @@ export async function getTrendingProducts(limit = 8) {
   // Returns [] when there is no click data so callers can fall back to a
   // curated selection. Popularity is never fabricated.
   try {
-    const grouped = await prisma.affiliateClick.groupBy({
+    const grouped = await withRetry(() =>
+      prisma.affiliateClick.groupBy({
       by: ["productId"],
       where: { isBot: false, product: { status: "PUBLISHED" } },
       _count: { _all: true },
       orderBy: { _count: { productId: "desc" } },
       take: limit,
-    });
+    }),
+    );
     if (grouped.length === 0) return [];
 
-    const products = await prisma.product.findMany({
+    const products = await withRetry(() =>
+      prisma.product.findMany({
       where: {
         id: { in: grouped.map((g) => g.productId) },
         status: "PUBLISHED",
       },
       include: productInclude,
-    });
+    }),
+    );
     const rank = new Map(grouped.map((g, i) => [g.productId, i]));
     return serializeProducts(
       products.sort((a, b) => (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0)),
@@ -236,7 +258,9 @@ export async function getRelatedProducts(productId: string, categoryIds: string[
   cacheLife("minutes");
   cacheTag("products");
   try {
-    return serializeProducts(await prisma.product.findMany({
+    return serializeProducts(
+      await withRetry(() =>
+        prisma.product.findMany({
       where: {
         status: "PUBLISHED",
         id: { not: productId },
@@ -247,7 +271,9 @@ export async function getRelatedProducts(productId: string, categoryIds: string[
       include: productInclude,
       orderBy: { publishedAt: "desc" },
       take: limit,
-    }));
+    }),
+      ),
+    );
   } catch (error) {
     console.error("Failed to load related products:", error);
     return [];
@@ -259,11 +285,13 @@ export async function listAllBrands(): Promise<string[]> {
   cacheLife("hours");
   cacheTag("products");
   try {
-    const rows = await prisma.product.findMany({
+    const rows = await withRetry(() =>
+      prisma.product.findMany({
       where: { status: "PUBLISHED", brand: { not: null } },
       select: { brand: true },
       distinct: ["brand"],
-    });
+    }),
+    );
     return rows
       .map((r) => r.brand)
       .filter((b): b is string => Boolean(b))
@@ -279,11 +307,13 @@ export async function listAllRetailers(): Promise<string[]> {
   cacheLife("hours");
   cacheTag("products");
   try {
-    const rows = await prisma.affiliateOffer.findMany({
+    const rows = await withRetry(() =>
+      prisma.affiliateOffer.findMany({
       where: { status: "ACTIVE", product: { status: "PUBLISHED" } },
       select: { retailerName: true },
       distinct: ["retailerName"],
-    });
+    }),
+    );
     return rows.map((r) => r.retailerName).sort((a, b) => a.localeCompare(b));
   } catch (error) {
     console.error("Failed to load retailers:", error);
